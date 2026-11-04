@@ -1,26 +1,320 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-cosmic-950: #0b0a1f;
+  --color-cosmic-900: #141233;
+  --color-cosmic-800: #1d1a47;
+
+  --color-maroon-500: #a3324a;
+  --color-maroon-600: #8a2439;
+  --color-maroon-700: #721b2e;
+  --color-maroon-800: #5a1424;
+  --color-maroon-900: #3d0d18;
+
+  --color-gold-100: #fbf1d6;
+  --color-gold-200: #f4dfa4;
+  --color-gold-300: #ebc970;
+  --color-gold-400: #d9ac45;
+  --color-gold-500: #b98a2a;
+
+  --font-sans: var(--nf-jakarta), var(--nf-sinhala), ui-sans-serif, system-ui, sans-serif;
+  --font-sinhala: var(--nf-sinhala), var(--nf-jakarta), ui-sans-serif, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Sinhala first whenever the page is in Sinhala, so mixed text picks the right glyphs. */
+html[lang="si"] body {
+  font-family: var(--nf-sinhala), var(--nf-jakarta), ui-sans-serif, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cosmic-950);
+}
+
+/* The page glow lives on the fixed backdrop layer (see layout.tsx) instead of
+   `background-attachment: fixed`, which forces a full repaint on every scroll on phones. */
+.page-backdrop {
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgb(138 36 57 / 0.35), transparent 60%),
+    radial-gradient(900px 500px at 100% 10%, rgb(67 56 202 / 0.3), transparent 60%);
+}
+
+/* In the components layer so Tailwind utilities (w-24, border-t-2, …) can override these. */
+@layer components {
+  /* No backdrop-filter here: over the dark backdrop the blur was invisible but costly on phones. */
+  .glass {
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.075), rgb(255 255 255 / 0.035));
+    border: 1px solid rgb(235 201 112 / 0.18);
+    box-shadow: 0 10px 40px -12px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+
+  .star-field {
+    background-image:
+      radial-gradient(1px 1px at 20px 30px, rgb(255 255 255 / 0.7), transparent),
+      radial-gradient(1px 1px at 120px 80px, rgb(255 255 255 / 0.5), transparent),
+      radial-gradient(1.5px 1.5px at 200px 160px, rgb(244 223 164 / 0.7), transparent),
+      radial-gradient(1px 1px at 300px 40px, rgb(255 255 255 / 0.4), transparent),
+      radial-gradient(1px 1px at 360px 220px, rgb(255 255 255 / 0.6), transparent),
+      radial-gradient(1.5px 1.5px at 60px 260px, rgb(255 255 255 / 0.35), transparent);
+    background-size: 400px 300px;
+  }
+
+  /* Sinhala combining marks break if letters are spaced or synthesised. */
+  :lang(si),
+  .font-sinhala {
+    letter-spacing: normal;
+    font-synthesis: none;
+  }
+
+  /* text-base + relaxed leading keeps Sinhala ispilla/papilla from clipping. */
+  .field {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.15);
+    background: rgb(20 18 51 / 0.7);
+    padding: 0.6rem 0.85rem;
+    font-size: 1rem;
+    line-height: 1.625;
+    color: var(--color-indigo-50);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  /* Readable but clearly secondary to typed text (~4.5:1 on the field background). */
+  .field::placeholder {
+    color: rgb(199 210 254 / 0.6);
+    opacity: 1;
+  }
+  /* Phones keep 16px in inputs: smaller text makes iOS Safari zoom the page on focus. */
+  @media (min-width: 640px) {
+    .field {
+      font-size: 0.9375rem;
+    }
+  }
+  .field:focus {
+    border-color: var(--color-amber-400);
+    box-shadow: 0 0 0 3px rgb(251 191 36 / 0.2);
+  }
+  .field[aria-invalid="true"] {
+    border-color: rgb(248 113 113 / 0.8);
+  }
+  select.field {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23ebc970' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 8 5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    background-size: 0.9rem;
+    padding-right: 1.8rem;
+  }
+  /* Narrow selects in the single-row time picker: no chevron, centred value. */
+  select.field-compact {
+    background-image: none;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    text-align: center;
+    text-align-last: center;
+  }
+  select.field option {
+    background: var(--color-cosmic-900);
+  }
+}
+
+.print-only,
+.kendaraya-print {
+  display: none;
+}
+
+/* Honour the OS "reduce motion" setting site-wide: no animations, near-instant transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Daily horoscope sheet: slides up on phones, scales in on larger screens. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 200ms ease-out both;
+}
+.animate-sheet {
+  animation: sheet-up 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@media (min-width: 640px) {
+  .animate-sheet {
+    animation-name: pop-in;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-sheet {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Print / PDF: light page, every reading section expanded, Sinhala shaped
+   by the embedded Noto Sans Sinhala (no faux bold, spacing or justification
+   that would split conjuncts like ශ්‍රී or ක්‍ර).
+   --------------------------------------------------------------------------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body,
+  body * {
+    font-family: var(--nf-sinhala), var(--nf-jakarta), sans-serif !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-shadow: none !important;
+    font-synthesis: none;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Never justify Sinhala in the printed reading: stretched spacing splits conjuncts. */
+  .report-print p,
+  .report-print li {
+    text-align: start !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Print modes (lib/print.ts): the single-page Kendaraya or the full reading. */
+  html[data-print="kendaraya"] .report-print {
+    display: none !important;
+  }
+  html[data-print="kendaraya"] .kendaraya-print {
+    display: block !important;
+    break-inside: avoid;
+    break-after: avoid;
+  }
+  /* The Kendaraya fills the page exactly, so drop the wrappers' spacing around it. */
+  html[data-print="kendaraya"] body,
+  html[data-print="kendaraya"] main,
+  html[data-print="kendaraya"] .results-root {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+  .print-section {
+    display: block !important;
+    break-inside: auto;
+  }
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+
+  .glass {
+    background: #fff !important;
+    border: 1px solid #c9b27a !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: #5a1424 !important;
+    break-after: avoid;
+  }
+
+  .report-print p,
+  .report-print li,
+  .report-print td,
+  .report-print th,
+  .report-print span,
+  .report-print dd,
+  .report-print dt {
+    color: #111 !important;
+  }
+
+  /* Diagonal watermark repeated on every page (see components/PrintWatermark.tsx). */
+  .print-watermark {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0.1;
+  }
+  .print-watermark__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: rotate(-35deg);
+    color: #5a1424;
+  }
+  .print-watermark__logo {
+    width: 46mm;
+    height: 46mm;
+    color: #5a1424;
+  }
+  .print-watermark p {
+    margin: 0;
+    color: #5a1424 !important;
+    text-align: center !important;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .print-watermark__title {
+    font-size: 64pt;
+    font-weight: 700;
+  }
+  .print-watermark__subtitle {
+    font-size: 26pt;
+    font-weight: 600;
+  }
+  .print-watermark__name {
+    margin-top: 4mm !important;
+    font-size: 16pt;
+  }
+
+  .chart-svg {
+    --chart-line: #5a1424;
+    --chart-fill: #fffaf0;
+    --chart-text: #111;
+    --chart-lagna: #8a2439;
+    --chart-muted: #8a7a55;
+  }
 }

@@ -34,6 +34,17 @@ npm run dev
 
 Open http://localhost:3000.
 
+### 3. Database (optional, Postgres)
+
+```bash
+npm run db:up       # starts local Postgres in Docker
+npm run db:migrate  # creates the tables
+```
+
+Set `DATABASE_URL` in `.env.local` (`.env.example` has the local value) and restart `npm run dev`. Without it, the app still runs: profiles stay in the browser and the daily cache uses disk.
+
+In production, point `DATABASE_URL` at any Postgres host and run `npm run db:migrate` when deploying. After changing `lib/db/schema.ts`, run `npm run db:generate` and commit the new file in `drizzle/`. `npm run db:studio` opens a data browser.
+
 ## How it works
 
 1. The browser posts birth details to `/api/chart`. That route validates them and proxies them to FastAPI `POST /api/chart`.
@@ -61,11 +72,11 @@ Readings are cached per language, so switching languages keeps the form and char
    - the lucky number, colour (with its hex code) and direction, from the day's favourable graha.
 
    Gemini (`GEMINI_DAILY_MODEL`, default `gemini-flash-latest`) writes the 12 readings. Without a key, or if Gemini fails, short rule-based readings are used instead.
-3. Results are cached per `{date}-{lang}` in memory and in `.cache/daily-horoscope/`, so Gemini runs at most once a day per language. Rule-based results are cached for 10 minutes only, so a newly added key takes effect quickly.
+3. Results are cached per `{date}-{lang}` in memory and in Postgres (or `.cache/daily-horoscope/` without a database), so Gemini runs at most once a day per language. Rule-based results are cached for 10 minutes only, so a newly added key takes effect quickly.
 
 ### More features
 
-- **Saved profiles:** tick "save this profile" on the form to keep a person's birth details as a quick-select chip. They are stored only in that browser's `localStorage` (`lib/profiles.ts`).
+- **Saved profiles:** tick "save this profile" on the form to keep a person's birth details as a quick-select chip. They are kept in that browser's `localStorage` (`lib/profiles.ts`) and, with a database, in the `profiles` table through `/api/profiles`. There are no accounts: an httpOnly cookie, set on the first save, links a browser to its rows, so profiles don't follow someone to another device.
 - **Daily directions:** the daily banner shows මරු සූලම (Maru Soolama) by weekday (Sun/Fri West, Mon/Sat East, Tue/Wed North, Thu South) and the සුබ දිශාව opposite it. Both tables are in `backend/main.py` (`MARU_SOOLAMA`, `SUBA_DISHAWA`).
 - **Porondam (`/porondam`):** FastAPI `POST /api/porondam` calculates the 12 porondam with well-established classical rules: Nakath, Gana, Mahendra, Stree Deergha, Yoni, Rashi, Rashyadhipathi, Vashya, Rajju, Vedha, Nadi and Varna. It also checks Kuja Dosha. The rule tables are plain data, so more porondam can be added from a trusted lithaya. Gemini writes the harmony summary, with a rule-based fallback.
 - **Apala:** each chart includes the current Saturn transit (Erashtaka 12/1/2 from the Janma Rashi, Ashtama, Lagna) and difficult Rahu transits. When an apala is active, a server action (`app/actions/apala.ts`) asks Gemini for Sri Lankan remedies, falling back to traditional ones.
@@ -89,6 +100,8 @@ If a CSS change doesn't appear in `npm run dev`, stop the server, delete `.next/
 ```
 backend/main.py            FastAPI + pyswisseph calculation service
 backend/requirements.txt
+lib/db/                    Postgres connection and Drizzle schema
+drizzle/                   Generated SQL migrations
 data/sriLankaTowns.json    54 towns with lat/lon, Sinhala & English names
 lib/i18n.ts                Dictionaries, rashi/nakshatra/planet names, abbreviations
 lib/sriLankaTowns.ts       Typed town list + bilingual search
