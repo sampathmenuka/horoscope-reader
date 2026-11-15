@@ -136,7 +136,7 @@ export function TownSelect({ value, onChange, invalid, describedBy, id }: TownSe
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => choose(town.id)}
                 onMouseEnter={() => setActive(i)}
-                className={`flex min-h-11 cursor-pointer items-center justify-between gap-3 px-4 py-2 text-[15px] leading-relaxed transition-colors duration-100 ${
+                className={`flex min-h-11 cursor-pointer items-center justify-between gap-3 px-4 py-2 text-sm leading-relaxed transition-colors duration-100 ${
                   i === active ? "bg-maroon-700/55 text-gold-100" : "text-indigo-50"
                 }`}
               >

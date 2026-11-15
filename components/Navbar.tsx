@@ -72,10 +72,10 @@ function NavLinks() {
   const current = useCurrentSection();
   const go = useGoToSection();
 
-  const items: { key: Section; icon: string; label: string }[] = [
-    { key: "daily", icon: "☀️", label: t.navDaily },
-    { key: "chart", icon: "🔮", label: t.navChart },
-    { key: "porondam", icon: "💍", label: t.navPorondam },
+  const items: { key: Section; label: string }[] = [
+    { key: "daily", label: t.navDaily },
+    { key: "chart", label: t.navChart },
+    { key: "porondam", label: t.navPorondam },
   ];
 
   const handle = (section: Section) => (e: MouseEvent<HTMLAnchorElement>) => {
@@ -86,7 +86,7 @@ function NavLinks() {
 
   return (
     <nav aria-label={t.sectionsLabel} className="ml-auto hidden items-center gap-1.5 md:flex">
-      {items.map(({ key, icon, label }) => {
+      {items.map(({ key, label }) => {
         const active = current === key;
         const main = key === "daily";
         return (
@@ -108,7 +108,6 @@ function NavLinks() {
                   : "border-transparent text-indigo-100/80 hover:border-gold-400/30 hover:text-gold-200"
             }`}
           >
-            <span aria-hidden>{icon}</span>
             {label}
           </Link>
         );

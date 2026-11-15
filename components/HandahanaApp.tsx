@@ -33,7 +33,7 @@ export function HandahanaApp() {
   const [chartTownId, setChartTownId] = useState("");
   const [chartLoading, setChartLoading] = useState(false);
   const [chartError, setChartError] = useState<ErrorCode | null>(null);
-  // The section comes from the URL ("/#daily" or "/"), shared with the navbar,
+  // The section comes from the URL ("/" for daily, "/#chart"), shared with the navbar,
   // the bottom bar and WhatsApp share links.
   const section = useCurrentSection();
   const mode = section === "daily" ? "daily" : "chart";
@@ -120,7 +120,7 @@ export function HandahanaApp() {
         <p className="mx-auto mt-3 max-w-2xl px-1 text-[15px] leading-relaxed text-indigo-100/70 sm:mt-4 sm:text-base">{t.heroSubtitle}</p>
       </section>
 
-      <SectionNav className="mb-6 sm:mb-10" />
+      {mode === "daily" && <SectionNav className="mb-6 sm:mb-10" showIcons />}
 
       {/* Both modes stay mounted so the form, chart and daily readings survive switching. */}
       <div
