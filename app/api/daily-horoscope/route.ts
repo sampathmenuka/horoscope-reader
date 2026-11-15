@@ -1,6 +1,5 @@
 import { z } from "zod";
 import {
-  DailyTransitsSchema,
   LAGNA_IDS,
   lagnaDayFacts,
   lagnaName,
@@ -10,12 +9,12 @@ import {
   type LagnaDayFacts,
 } from "@/lib/daily";
 import { cached } from "@/lib/dailyCache";
+import { colomboToday, fetchTransits } from "@/lib/transits";
 import { FAST_MODEL, SINHALA_STYLE, generateJson, geminiKey, logGeminiError } from "@/lib/gemini";
 import { NAKSHATRA_NAMES, PLANET_NAMES, RASHI_NAMES, isLang, type Lang } from "@/lib/i18n";
 
 export const maxDuration = 300;
 
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://127.0.0.1:8000";
 const MODEL = FAST_MODEL;
 
 const DAY_MS = 26 * 60 * 60 * 1000; // key already includes the date; 26h covers the whole Colombo day
@@ -25,21 +24,6 @@ const RULES_TTL_MS = 10 * 60 * 1000;
 // Bump whenever the DailyHoroscope response shape changes, so entries cached by an
 // older version (in memory or in .cache/) are never served to the new UI.
 const CACHE_VERSION = 2;
-
-function colomboToday(): string {
-  // en-CA formats as YYYY-MM-DD.
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Colombo" }).format(new Date());
-}
-
-
-async function fetchTransits(date: string): Promise<DailyTransits> {
-  const res = await fetch(`${BACKEND_URL}/api/daily-transits?day=${date}`, {
-    cache: "no-store",
-    signal: AbortSignal.timeout(20_000),
-  });
-  if (!res.ok) throw new Error(`daily-transits returned ${res.status}`);
-  return DailyTransitsSchema.parse(await res.json());
-}
 
 /* ---------------- Gemini ---------------- */
 
