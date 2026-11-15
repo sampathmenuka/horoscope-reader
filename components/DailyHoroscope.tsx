@@ -148,7 +148,7 @@ function PanchangaBanner({ data }: { data: DailyData }) {
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:flex sm:items-stretch sm:gap-2.5">
-          <div className="col-span-2 flex items-center gap-3 rounded-2xl border border-amber-400/40 bg-amber-500/10 px-3.5 py-2.5 shadow-[0_0_24px_-8px_rgba(251,191,36,0.5)]">
+          <div className="col-span-2 flex items-center gap-3 rounded-2xl border border-amber-400/40 bg-amber-500/10 px-3.5 py-2.5">
             <div>
               <p className="text-xs leading-relaxed text-amber-200/80">{t.rahuKalaya}</p>
               <p className="text-base leading-snug font-bold whitespace-nowrap text-amber-200 tabular-nums">{rahu.text}</p>
@@ -216,7 +216,7 @@ function LagnaCard({ reading, isUser, onOpen }: { reading: DailyLagnaReading; is
       aria-haspopup="dialog"
       className={`group relative flex h-full w-full flex-col items-center rounded-2xl border px-1.5 pt-4 pb-3 text-center transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 sm:rounded-3xl sm:px-3 sm:pt-5 sm:pb-4 ${
         isUser
-          ? "border-gold-400/70 bg-maroon-800/40 shadow-[0_0_24px_-6px_rgba(217,172,69,0.55)]"
+          ? "border-gold-400/70 bg-maroon-800/40"
           : "border-white/10 bg-cosmic-900/55 hover:border-gold-400/50 hover:bg-cosmic-800/60"
       }`}
     >
@@ -226,7 +226,7 @@ function LagnaCard({ reading, isUser, onOpen }: { reading: DailyLagnaReading; is
         </span>
       )}
       {reading.chandrashtama && (
-        <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]" title={t.chandrashtama} />
+        <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-amber-400" title={t.chandrashtama} />
       )}
       <span className="flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/40 bg-gradient-to-b from-gold-400/20 to-transparent text-gold-300 transition group-hover:border-gold-300 group-hover:text-gold-200 sm:h-16 sm:w-16">
         <RashiIcon index={reading.lagnaIndex} className="h-9 w-9 sm:h-12 sm:w-12" />

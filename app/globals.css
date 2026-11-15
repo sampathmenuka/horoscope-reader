@@ -1,9 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cosmic-950: #0b0a1f;
-  --color-cosmic-900: #141233;
-  --color-cosmic-800: #1d1a47;
+  /* Warm dark brown base (replaces the purple "cosmic" tones). */
+  --color-cosmic-950: #180e0c;
+  --color-cosmic-900: #231512;
+  --color-cosmic-800: #301c17;
+
+  /* Ivory / parchment text tones; these replace Tailwind's default blue-purple "indigo" ramp. */
+  --color-indigo-50: #fbf5e8;
+  --color-indigo-100: #f3e9d4;
+  --color-indigo-200: #e2d3b5;
+  --color-indigo-300: #cbb892;
+  --color-indigo-400: #ab9770;
+  --color-indigo-800: #3b2620;
+  --color-indigo-900: #2c1b17;
 
   --color-maroon-500: #a3324a;
   --color-maroon-600: #8a2439;
@@ -37,29 +47,15 @@ body {
 /* The page glow lives on the fixed backdrop layer (see layout.tsx) instead of
    `background-attachment: fixed`, which forces a full repaint on every scroll on phones. */
 .page-backdrop {
-  background:
-    radial-gradient(1200px 600px at 15% -10%, rgb(138 36 57 / 0.35), transparent 60%),
-    radial-gradient(900px 500px at 100% 10%, rgb(67 56 202 / 0.3), transparent 60%);
+  background: radial-gradient(1100px 520px at 50% -12%, rgb(138 36 57 / 0.22), transparent 62%);
 }
 
 /* In the components layer so Tailwind utilities (w-24, border-t-2, …) can override these. */
 @layer components {
   /* No backdrop-filter here: over the dark backdrop the blur was invisible but costly on phones. */
   .glass {
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.075), rgb(255 255 255 / 0.035));
-    border: 1px solid rgb(235 201 112 / 0.18);
-    box-shadow: 0 10px 40px -12px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.06);
-  }
-
-  .star-field {
-    background-image:
-      radial-gradient(1px 1px at 20px 30px, rgb(255 255 255 / 0.7), transparent),
-      radial-gradient(1px 1px at 120px 80px, rgb(255 255 255 / 0.5), transparent),
-      radial-gradient(1.5px 1.5px at 200px 160px, rgb(244 223 164 / 0.7), transparent),
-      radial-gradient(1px 1px at 300px 40px, rgb(255 255 255 / 0.4), transparent),
-      radial-gradient(1px 1px at 360px 220px, rgb(255 255 255 / 0.6), transparent),
-      radial-gradient(1.5px 1.5px at 60px 260px, rgb(255 255 255 / 0.35), transparent);
-    background-size: 400px 300px;
+    background: rgb(255 244 224 / 0.05);
+    border: 1px solid rgb(235 201 112 / 0.22);
   }
 
   /* Sinhala combining marks break if letters are spaced or synthesised. */
@@ -74,7 +70,7 @@ body {
     width: 100%;
     border-radius: 0.75rem;
     border: 1px solid rgb(255 255 255 / 0.15);
-    background: rgb(20 18 51 / 0.7);
+    background: rgb(35 21 18 / 0.75);
     padding: 0.6rem 0.85rem;
     font-size: 0.875rem;
     line-height: 1.625;
@@ -84,7 +80,7 @@ body {
   }
   /* Readable but clearly secondary to typed text (~4.5:1 on the field background). */
   .field::placeholder {
-    color: rgb(199 210 254 / 0.6);
+    color: rgb(226 211 181 / 0.55);
     opacity: 1;
   }
   @media (min-width: 640px) {

@@ -39,7 +39,7 @@ export function BabyNames({ chart }: { chart: ChartResponse }) {
       <p className="text-[15px] leading-relaxed text-indigo-100/80">{t.babyNamesIntro(NAKSHATRA_NAMES[lang][index], pada)}</p>
 
       <div className="mt-4 flex items-center gap-4">
-        <span className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border-2 border-gold-400/70 bg-gradient-to-b from-gold-400/25 to-maroon-900/40 shadow-[0_0_28px_-6px_rgba(217,172,69,0.6)]">
+        <span className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border-2 border-gold-400/70 bg-gradient-to-b from-gold-400/25 to-maroon-900/40">
           <span className="font-sinhala text-3xl leading-tight font-bold text-gold-100">{current.si}</span>
           <span className="text-xs font-semibold text-gold-300">{current.en}</span>
         </span>

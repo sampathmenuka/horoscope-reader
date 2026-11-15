@@ -101,7 +101,7 @@ function NavLinks() {
             className={`font-sinhala flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm leading-relaxed font-semibold whitespace-nowrap transition ${
               main
                 ? active
-                  ? "border-gold-300 bg-gradient-to-b from-gold-300 to-gold-500 text-cosmic-950 shadow-[0_4px_16px_-4px_rgba(217,172,69,0.7)]"
+                  ? "border-gold-300 bg-gradient-to-b from-gold-300 to-gold-500 text-cosmic-950"
                   : "border-gold-400/70 bg-gold-400/15 text-gold-100 hover:bg-gold-400/25"
                 : active
                   ? "border-gold-400/60 bg-maroon-700/60 text-gold-100"

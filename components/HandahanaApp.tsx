@@ -114,7 +114,7 @@ export function HandahanaApp() {
   return (
     <main className="mx-auto max-w-6xl px-3 pb-16 sm:px-4 sm:pb-20">
       <section className="no-print pt-7 pb-6 text-center sm:pt-16 sm:pb-12">
-        <h1 className="font-sinhala mx-auto max-w-4xl text-balance bg-gradient-to-b from-gold-100 to-gold-400 bg-clip-text text-[1.7rem] leading-snug font-bold text-transparent sm:text-5xl sm:leading-tight">
+        <h1 className="font-sinhala mx-auto max-w-4xl text-balance text-[1.7rem] leading-snug font-bold text-gold-200 sm:text-5xl sm:leading-tight">
           {t.heroTitle}
         </h1>
         <p className="mx-auto mt-3 max-w-2xl px-1 text-[15px] leading-relaxed text-indigo-100/70 sm:mt-4 sm:text-base">{t.heroSubtitle}</p>

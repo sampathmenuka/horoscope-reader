@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export const instant = false;
 
 export const viewport: Viewport = {
-  themeColor: "#0b0a1f",
+  themeColor: "#180e0c",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -39,9 +39,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={initialLang ?? "si"} className={`${sinhala.variable} ${jakarta.variable} h-full antialiased`}>
       <body className="relative min-h-full bg-cosmic-950 text-indigo-50">
-        <div className="page-backdrop pointer-events-none fixed inset-0 -z-10 no-print" aria-hidden>
-          <div className="star-field absolute inset-0" />
-        </div>
+        <div className="page-backdrop pointer-events-none fixed inset-0 -z-10 no-print" aria-hidden />
         <LanguageProvider initialLang={initialLang}>
           <Navbar />
           {children}

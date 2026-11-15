@@ -86,7 +86,7 @@ export function PorondamMatcher() {
   return (
     <main className="mx-auto max-w-6xl px-3 pb-16 sm:px-4 sm:pb-20">
       <section className="pt-7 pb-6 text-center sm:pt-14 sm:pb-10">
-        <h1 className="font-sinhala mx-auto max-w-3xl bg-gradient-to-b from-gold-100 to-gold-400 bg-clip-text text-[1.7rem] leading-snug font-bold text-transparent sm:text-4xl sm:leading-tight">
+        <h1 className="font-sinhala mx-auto max-w-3xl text-[1.7rem] leading-snug font-bold text-gold-200 sm:text-4xl sm:leading-tight">
           {t.porondamTitle}
         </h1>
         <p className="mx-auto mt-3 max-w-2xl px-1 text-[15px] leading-relaxed text-indigo-100/70 sm:text-base">{t.porondamSubtitle}</p>
