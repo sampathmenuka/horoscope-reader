@@ -5,6 +5,7 @@ import { Spinner } from "@/components/BirthForm";
 import { RashiIcon } from "@/components/RashiIcon";
 import { useLanguage } from "@/context/LanguageContext";
 import { DIRECTION_DEGREES, type DailyHoroscope as DailyData, type DailyLagnaReading } from "@/lib/daily";
+import type { LagnaOutlook, OutlookPeriod } from "@/lib/lagnaOutlook";
 import {
   NAKSHATRA_NAMES,
   RASHI_NAMES,
@@ -148,10 +149,6 @@ function PanchangaBanner({ data }: { data: DailyData }) {
 
         <div className="grid grid-cols-2 gap-2 sm:flex sm:items-stretch sm:gap-2.5">
           <div className="col-span-2 flex items-center gap-3 rounded-2xl border border-amber-400/40 bg-amber-500/10 px-3.5 py-2.5 shadow-[0_0_24px_-8px_rgba(251,191,36,0.5)]">
-            <svg className="h-5 w-5 shrink-0 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v5l3 2" strokeLinecap="round" />
-            </svg>
             <div>
               <p className="text-xs leading-relaxed text-amber-200/80">{t.rahuKalaya}</p>
               <p className="text-base leading-snug font-bold whitespace-nowrap text-amber-200 tabular-nums">{rahu.text}</p>
@@ -163,7 +160,6 @@ function PanchangaBanner({ data }: { data: DailyData }) {
               label={t.maruSoolama}
               hint={t.maruSoolamaHint}
               name={p.maruSoolama.name[lang]}
-              degrees={DIRECTION_DEGREES[p.maruSoolama.code]}
               tone="avoid"
             />
           )}
@@ -172,7 +168,6 @@ function PanchangaBanner({ data }: { data: DailyData }) {
               label={t.subaDishawa}
               hint={t.subaDishawaHint}
               name={p.subaDishawa.name[lang]}
-              degrees={DIRECTION_DEGREES[p.subaDishawa.code]}
               tone="good"
             />
           )}
@@ -257,7 +252,7 @@ function shareText(reading: DailyLagnaReading, date: string, lang: Lang, t: Retu
     `🎨 ${t.jayaPata}: ${reading.jayaPata.name}`,
     `🧭 ${t.subaDishawa}: ${reading.subaDishawa}`,
     "",
-    `${window.location.origin}/#daily`,
+    `${window.location.origin}/`,
   ].join("\n");
 }
 
@@ -389,6 +384,8 @@ function ReadingSheet({
             />
           </div>
 
+          <LagnaOutlookSection reading={reading} />
+
           <div className="mt-6 grid gap-2.5">
             <button
               type="button"
@@ -412,6 +409,104 @@ function ReadingSheet({
   );
 }
 
+type OutlookTab = "about" | OutlookPeriod;
+const OUTLOOK_TABS: OutlookTab[] = ["about", "week", "month", "year"];
+
+/** "See more" under a Lagna's daily reading: what the Lagna is like, plus next week, month and year. */
+function LagnaOutlookSection({ reading }: { reading: DailyLagnaReading }) {
+  const { lang, t } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<OutlookTab>("about");
+  const [data, setData] = useState<Partial<Record<Lang, LagnaOutlook>>>({});
+  const [errors, setErrors] = useState<Partial<Record<Lang, ErrorCode>>>({});
+  const inFlight = useRef(new Set<Lang>());
+
+  useEffect(() => {
+    if (!open || data[lang] || errors[lang] || inFlight.current.has(lang)) return;
+    const forLang = lang;
+    inFlight.current.add(forLang);
+    fetch(`/api/lagna-outlook?lagna=${reading.lagnaId}&lang=${forLang}`)
+      .then(async (res) => {
+        const body = await res.json().catch(() => null);
+        if (res.ok) setData((s) => ({ ...s, [forLang]: body as LagnaOutlook }));
+        else setErrors((s) => ({ ...s, [forLang]: (body?.error as ErrorCode) ?? "predict_failed" }));
+      })
+      .catch(() => setErrors((s) => ({ ...s, [forLang]: "network" })))
+      .finally(() => inFlight.current.delete(forLang));
+  }, [open, lang, data, errors, reading.lagnaId]);
+
+  const outlook = data[lang];
+  const error = errors[lang];
+
+  return (
+    <div className="mt-6">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="font-sinhala flex w-full items-center justify-center gap-2 rounded-2xl border border-gold-400/40 bg-gold-400/10 px-4 py-3 text-[15px] leading-relaxed font-semibold text-gold-100 transition hover:bg-gold-400/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 sm:text-base"
+      >
+        {open ? t.seeLess : t.seeMore}
+        <svg className={`h-4 w-4 transition ${open ? "rotate-180" : ""}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+          <path d="M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4Z" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="mt-3 rounded-2xl border border-white/10 bg-cosmic-900/60 p-3.5 sm:p-4">
+          <div role="tablist" aria-label={t.seeMore} className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+            {OUTLOOK_TABS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                id={`outlook-tab-${key}`}
+                aria-selected={tab === key}
+                aria-controls="outlook-panel"
+                onClick={() => setTab(key)}
+                className={`font-sinhala rounded-xl border px-2 py-2 text-sm leading-snug font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 ${
+                  tab === key
+                    ? "border-gold-300 bg-gradient-to-b from-gold-300 to-gold-500 text-cosmic-950"
+                    : "border-white/10 text-indigo-100/80 hover:border-gold-400/40 hover:text-gold-200"
+                }`}
+              >
+                {t.outlookTabs[key]}
+              </button>
+            ))}
+          </div>
+
+          <div id="outlook-panel" role="tabpanel" aria-labelledby={`outlook-tab-${tab}`} className="mt-3.5" aria-live="polite">
+            {!outlook && !error && (
+              <p className="flex items-center justify-center gap-3 py-6 text-sm text-indigo-100/80">
+                <Spinner />
+                {t.outlookLoading}
+              </p>
+            )}
+            {error && (
+              <div role="alert" className="rounded-xl border border-red-400/30 bg-red-950/40 px-3 py-4 text-center text-sm text-red-200">
+                <p>{t.errors[error]}</p>
+                <button
+                  type="button"
+                  onClick={() => setErrors((s) => ({ ...s, [lang]: undefined }))}
+                  className="mt-3 rounded-xl border border-red-300/40 px-4 py-2 text-red-100 transition hover:bg-red-900/40"
+                >
+                  {t.tryAgain}
+                </button>
+              </div>
+            )}
+            {outlook && (
+              <>
+                <p className="text-base leading-[1.9] text-indigo-50/95">{outlook[tab]}</p>
+                {tab !== "about" && <p className="mt-3 text-[11px] leading-relaxed text-indigo-200/65">{t.outlookNote}</p>}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Badge({ icon, label, visual, caption }: { icon: string; label: string; visual: ReactNode; caption?: ReactNode }) {
   return (
     <div className="flex flex-col items-center rounded-2xl border border-gold-400/25 bg-cosmic-900/70 px-1.5 pt-2.5 pb-3 text-center">
@@ -429,13 +524,11 @@ function DirectionBadge({
   label,
   hint,
   name,
-  degrees,
   tone,
 }: {
   label: string;
   hint: string;
   name: string;
-  degrees: number;
   tone: "avoid" | "good";
 }) {
   const colours =
@@ -443,13 +536,7 @@ function DirectionBadge({
       ? "border-red-400/40 bg-red-500/10 text-red-200"
       : "border-emerald-400/40 bg-emerald-500/10 text-emerald-200";
   return (
-    // Below 400px the two badges share a narrow row, so the compass sits above the
-    // name and long Sinhala directions (නැගෙනහිර) get the card's full width.
-    <div
-      className={`flex flex-col items-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center min-[400px]:flex-row min-[400px]:gap-2.5 min-[400px]:px-3 min-[400px]:text-left ${colours}`}
-      title={hint}
-    >
-      <CompassArrow degrees={degrees} className={`h-7 w-7 shrink-0 min-[400px]:h-8 min-[400px]:w-8 ${tone === "avoid" ? "text-red-300" : "text-emerald-300"}`} />
+    <div className={`flex items-center justify-center rounded-2xl border px-3 py-2.5 text-center ${colours}`} title={hint}>
       <div className="min-w-0">
         <p className="text-xs leading-relaxed opacity-80">{label}</p>
         <p className="text-base leading-snug font-bold break-words">{name}</p>
