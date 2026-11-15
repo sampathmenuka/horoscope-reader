@@ -46,7 +46,7 @@ export function BirthForm({ values, onChange, onSubmit, loading }: BirthFormProp
 
   return (
     <form onSubmit={handleSubmit} noValidate aria-busy={loading} className="glass no-print rounded-3xl border-t-2 border-t-amber-500/40 p-4 sm:p-8">
-      <h2 className="font-sinhala mb-5 text-center text-base leading-relaxed font-semibold text-balance text-gold-200 sm:mb-6 sm:text-lg">{t.formTitle}</h2>
+      <h2 className="font-sinhala mb-5 text-center text-[15px] leading-relaxed font-semibold text-balance text-gold-200 sm:mb-6 sm:text-base">{t.formTitle}</h2>
 
       <ProfileChips
         className="mb-6"
@@ -181,7 +181,7 @@ export function BirthFields({
           {(["male", "female", "other"] as const).map((g) => (
             <label
               key={g}
-              className={`cursor-pointer rounded-xl border px-3 py-2.5 text-center text-[15px] leading-relaxed transition-colors duration-150 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold-300/80 ${
+              className={`cursor-pointer rounded-xl border px-3 py-2.5 text-center text-sm leading-relaxed transition-colors duration-150 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold-300/80 ${
                 values.gender === g
                   ? "border-gold-400 bg-maroon-700/50 text-gold-100"
                   : "border-white/15 bg-cosmic-900/60 text-indigo-100 hover:border-amber-400/60"
@@ -297,7 +297,7 @@ function Field({
   const Label = asGroup ? "span" : "label";
   return (
     <div className={className}>
-      <Label id={`${name}-label`} {...(asGroup ? {} : { htmlFor })} className="mb-2 block text-[15px] leading-relaxed font-medium text-gold-100/90">
+      <Label id={`${name}-label`} {...(asGroup ? {} : { htmlFor })} className="mb-2 block text-sm leading-relaxed font-medium text-gold-100/90">
         {label}
       </Label>
       {children}
@@ -342,7 +342,7 @@ function Segmented<T extends string>({
           role="radio"
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
-          className={`rounded-lg px-2.5 py-1.5 text-[15px] leading-relaxed whitespace-nowrap transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300/80 sm:px-3 ${
+          className={`rounded-lg px-2.5 py-1.5 text-sm leading-relaxed whitespace-nowrap transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300/80 sm:px-3 ${
             value === o.value ? "bg-gold-400 font-semibold text-cosmic-950" : "text-indigo-100/80 hover:text-gold-200"
           }`}
         >

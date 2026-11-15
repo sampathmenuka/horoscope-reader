@@ -10,7 +10,7 @@ import { SECTION_HREF, SECTIONS_ANCHOR_ATTR, useCurrentSection, useGoToSection, 
  * with "හඳහන පරීක්ෂාව" and "පොරොන්දම්" side by side beneath it.
  * Used on the home page and the porondam page.
  */
-export function SectionNav({ className = "" }: { className?: string }) {
+export function SectionNav({ className = "", showIcons = false }: { className?: string; showIcons?: boolean }) {
   const { t } = useLanguage();
   const current = useCurrentSection();
   const go = useGoToSection();
@@ -37,13 +37,10 @@ export function SectionNav({ className = "" }: { className?: string }) {
         aria-current={dailyActive ? "page" : undefined}
         className={`font-sinhala group flex w-full items-center justify-center gap-2.5 rounded-2xl border px-4 py-3.5 text-base leading-snug font-bold whitespace-nowrap transition min-[380px]:text-[17px] sm:gap-3 sm:px-5 sm:py-5 sm:text-xl ${
           dailyActive
-            ? "border-gold-300 bg-gradient-to-b from-gold-300 to-gold-500 text-cosmic-950 shadow-[0_8px_30px_-6px_rgba(217,172,69,0.65)]"
-            : "border-gold-400/70 bg-gradient-to-b from-gold-400/20 to-maroon-900/40 text-gold-100 shadow-[0_0_28px_-8px_rgba(217,172,69,0.6)] hover:from-gold-400/30"
+            ? "border-gold-300 bg-gradient-to-b from-gold-300 to-gold-500 text-cosmic-950"
+            : "border-gold-400/70 bg-gradient-to-b from-gold-400/20 to-maroon-900/40 text-gold-100 hover:from-gold-400/30"
         }`}
       >
-        <span aria-hidden className="text-xl transition group-hover:scale-110 min-[380px]:text-2xl sm:text-3xl">
-          ☀️
-        </span>
         <span>{t.modeDaily}</span>
       </Link>
 
@@ -63,10 +60,12 @@ export function SectionNav({ className = "" }: { className?: string }) {
                   : "glass border-gold-400/25 text-indigo-50 hover:border-gold-400/50 hover:text-gold-200"
               }`}
             >
-              <span aria-hidden className="text-lg">
-                {icon}
-              </span>
               <span>{label}</span>
+              {showIcons && (
+                <span aria-hidden className="text-lg">
+                  {icon}
+                </span>
+              )}
             </Link>
           );
         })}
