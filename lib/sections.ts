@@ -6,15 +6,15 @@ import { useCallback, useSyncExternalStore } from "react";
 /**
  * The site's three sections, addressed by URL so the landing buttons, the navbar,
  * the mobile bottom bar and the browser's Back button all agree:
- *   daily    → /#daily
- *   chart    → /
+ *   daily    → /  (the landing page; the old /#daily links still land here)
+ *   chart    → /#chart
  *   porondam → /porondam
  */
 export type Section = "daily" | "chart" | "porondam";
 
 export const SECTION_HREF: Record<Section, string> = {
-  daily: "/#daily",
-  chart: "/",
+  daily: "/",
+  chart: "/#chart",
   porondam: "/porondam",
 };
 
@@ -35,7 +35,7 @@ export function useCurrentSection(): Section {
   const pathname = usePathname();
   const hash = useSyncExternalStore(subscribeHash, readHash, () => "");
   if (pathname?.startsWith("/porondam")) return "porondam";
-  return hash === "#daily" ? "daily" : "chart";
+  return hash === "#chart" ? "chart" : "daily";
 }
 
 /**
@@ -56,7 +56,7 @@ export function useGoToSection() {
         router.push(SECTION_HREF[section]);
         return;
       }
-      const url = section === "daily" ? "/#daily" : "/";
+      const url = SECTION_HREF[section];
       if (window.location.pathname + window.location.hash !== url) {
         window.history.pushState(null, "", url);
         window.dispatchEvent(new HashChangeEvent("hashchange"));

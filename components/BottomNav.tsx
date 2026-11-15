@@ -60,7 +60,7 @@ export function BottomNav() {
             aria-hidden
             className={`flex h-14 w-14 items-center justify-center rounded-full border-2 text-2xl transition ${
               dailyActive
-                ? "border-gold-200 bg-gradient-to-b from-gold-300 to-gold-500 shadow-[0_6px_22px_-4px_rgba(217,172,69,0.75)]"
+                ? "border-gold-200 bg-gradient-to-b from-gold-300 to-gold-500"
                 : "border-gold-400/70 bg-gradient-to-b from-maroon-600 to-maroon-800 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.7)]"
             }`}
           >

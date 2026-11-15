@@ -26,7 +26,6 @@ export function LanguageModal({ onChoose }: { onChoose: (lang: Lang) => void }) 
       aria-labelledby="welcome-title"
       className="no-print fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-cosmic-950/92 px-4 py-10"
     >
-      <div className="star-field pointer-events-none absolute inset-0 opacity-60" aria-hidden />
       <div className="glass relative w-full max-w-lg rounded-3xl p-8 text-center sm:p-10">
         <LotusMark className="mx-auto mb-6 h-20 w-20 text-gold-400" />
         <h1 id="welcome-title" className="font-sinhala text-2xl font-semibold text-gold-200 sm:text-3xl">

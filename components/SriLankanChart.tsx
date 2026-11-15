@@ -97,7 +97,7 @@ export function SriLankanChart({
         viewBox={`-2 -2 ${S + 4} ${S + 4}`}
         role="img"
         aria-label={`${title}. ${describe}`}
-        className="chart-svg mx-auto block aspect-square w-full max-w-[420px] [--chart-fill:rgb(20_18_51/0.55)] [--chart-lagna:#ebc970] [--chart-line:#d9ac45] [--chart-muted:rgb(199_210_254/0.55)] [--chart-text:#eef2ff]"
+        className="chart-svg mx-auto block aspect-square w-full max-w-[420px] [--chart-fill:rgb(35_21_18/0.55)] [--chart-lagna:#ebc970] [--chart-line:#d9ac45] [--chart-muted:rgb(199_210_254/0.55)] [--chart-text:#eef2ff]"
         style={{ fontFamily: "inherit" }}
       >
         <rect x={0} y={0} width={S} height={S} fill="var(--chart-fill)" stroke="var(--chart-line)" strokeWidth={2.5} rx={4} />

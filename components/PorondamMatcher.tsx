@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { BirthFields, Spinner } from "@/components/BirthForm";
 import { ProfileChips } from "@/components/ProfileChips";
-import { SectionNav } from "@/components/SectionNav";
 import { useLanguage } from "@/context/LanguageContext";
 import { EMPTY_BIRTH_FORM, validateBirthForm, type BirthFieldErrors, type BirthFormValues } from "@/lib/birthForm";
 import { NAKSHATRA_NAMES, RASHI_NAMES, type ErrorCode, type Lang } from "@/lib/i18n";
@@ -87,20 +86,18 @@ export function PorondamMatcher() {
   return (
     <main className="mx-auto max-w-6xl px-3 pb-16 sm:px-4 sm:pb-20">
       <section className="pt-7 pb-6 text-center sm:pt-14 sm:pb-10">
-        <h1 className="font-sinhala mx-auto max-w-3xl bg-gradient-to-b from-gold-100 to-gold-400 bg-clip-text text-[1.7rem] leading-snug font-bold text-transparent sm:text-4xl sm:leading-tight">
-          💍 {t.porondamTitle}
+        <h1 className="font-sinhala mx-auto max-w-3xl text-[1.7rem] leading-snug font-bold text-gold-200 sm:text-4xl sm:leading-tight">
+          {t.porondamTitle}
         </h1>
         <p className="mx-auto mt-3 max-w-2xl px-1 text-[15px] leading-relaxed text-indigo-100/70 sm:text-base">{t.porondamSubtitle}</p>
       </section>
-
-      <SectionNav className="mb-6 sm:mb-10" />
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           {(["bride", "groom"] as const).map((side) => (
             <fieldset key={side} className="glass min-w-0 rounded-3xl border-t-2 border-t-amber-500/40 p-4 sm:p-6">
               <legend className="sr-only">{t[side]}</legend>
-              <h2 className="font-sinhala mb-4 flex items-center gap-2 text-lg leading-relaxed font-semibold text-gold-200">
+              <h2 className="font-sinhala mb-4 flex items-center gap-2 text-base leading-relaxed font-semibold text-gold-200">
                 <span aria-hidden className="text-2xl">
                   {side === "bride" ? "👰" : "🤵"}
                 </span>
