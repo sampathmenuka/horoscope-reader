@@ -76,7 +76,7 @@ export function PlanetTable({ chart }: { chart: ChartResponse }) {
       <h2 className="font-sinhala mb-3 text-lg leading-relaxed font-semibold text-gold-200 sm:mb-4">{t.planetTable}</h2>
 
       {/* Cards on phones and in the half-width desktop column; the full table on tablets and in print. */}
-      <ul className="grid grid-cols-2 gap-2.5 md:hidden lg:grid print:hidden">
+      <ul className="grid grid-cols-2 gap-2.5 md:hidden lg:grid lg:grid-cols-5 print:hidden">
         <li className="rounded-2xl border border-gold-400/30 bg-maroon-900/30 p-3">
           <PlanetCardHeader abbr={PLANET_ABBR.lagna[lang]} name={SHORT_NAMES.lagna[lang]} highlight />
           <p className="mt-2 text-sm leading-relaxed text-indigo-50">

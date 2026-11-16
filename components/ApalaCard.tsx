@@ -40,8 +40,7 @@ export function ApalaCard({ chart }: { chart: ChartResponse }) {
       aria-labelledby="apala-title"
     >
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h2 id="apala-title" className="font-sinhala text-lg leading-relaxed font-semibold text-gold-200">
-          {apala.active && <span aria-hidden>⚠️ </span>}
+        <h2 id="apala-title" className={`font-sinhala text-lg leading-relaxed font-semibold ${apala.active ? "text-red-400" : "text-gold-200"}`}>
           {t.apalaTitle}
         </h2>
         <p className="text-xs leading-relaxed text-indigo-200/65">{t.apalaAsOf(formatDate(apala.as_of, lang))}</p>
@@ -84,7 +83,7 @@ export function ApalaCard({ chart }: { chart: ChartResponse }) {
             ))}
           </ul>
 
-          <div className="mt-5 rounded-2xl border border-gold-400/25 bg-maroon-900/30 p-4">
+          <div className="mt-5 rounded-2xl border border-gold-300/40 bg-gradient-to-br from-amber-200/15 to-gold-300/5 p-4">
             <h3 className="font-sinhala mb-3 text-base leading-relaxed font-semibold text-gold-200">{t.remedies}</h3>
             {!current && (
               <p className="flex items-center gap-2 text-sm text-indigo-100/75" aria-live="polite">
@@ -95,8 +94,8 @@ export function ApalaCard({ chart }: { chart: ChartResponse }) {
               <>
                 <ul className="space-y-2.5">
                   {current.remedies.map((r) => (
-                    <li key={r.title + r.detail} className="text-[15px] leading-relaxed text-indigo-50/90">
-                      <span className="font-semibold text-gold-100">🪔 {r.title}</span>
+                    <li key={r.title + r.detail} className="text-[15px] leading-relaxed text-amber-50">
+                      <span className="font-semibold text-amber-200">🪔 {r.title}</span>
                       <span className="block">{r.detail}</span>
                     </li>
                   ))}

@@ -86,8 +86,9 @@ export function BabyNames({ chart }: { chart: ChartResponse }) {
           disabled={pending}
           className="ml-auto inline-flex items-center gap-2 rounded-xl border border-gold-400/60 bg-gradient-to-b from-gold-300 to-gold-500 px-4 py-2 text-sm leading-relaxed font-semibold text-cosmic-950 transition hover:from-gold-200 hover:to-gold-400 disabled:opacity-60"
         >
-          {pending ? <Spinner /> : <span aria-hidden>✨</span>}
+          {pending && <Spinner />}
           {pending ? t.suggestingNames : t.suggestNames}
+          {!pending && <span aria-hidden>✨</span>}
         </button>
       </div>
 

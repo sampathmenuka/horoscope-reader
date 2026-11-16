@@ -5,6 +5,9 @@ import { useLanguage } from "@/context/LanguageContext";
 import { PLANET_NAMES, formatDate } from "@/lib/i18n";
 import type { ChartResponse } from "@/lib/types";
 
+// Periods that begin after this year are too far ahead to be useful.
+const MAX_START_YEAR = 2039;
+
 export function DashaTimeline({ chart }: { chart: ChartResponse }) {
   const { lang, t } = useLanguage();
   const { dasha } = chart;
@@ -25,6 +28,7 @@ export function DashaTimeline({ chart }: { chart: ChartResponse }) {
 
       <ol className="space-y-2">
         {dasha.maha_dashas.map((maha, i) => {
+          if (Number(maha.start.slice(0, 4)) > MAX_START_YEAR) return null;
           const open = expanded === i;
           return (
             <li

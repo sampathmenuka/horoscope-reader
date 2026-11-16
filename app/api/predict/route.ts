@@ -2,8 +2,10 @@ import { DEFAULT_MODEL, SINHALA_STYLE, generateJson, geminiKey, logGeminiError }
 import { chartDigest, deriveFacts } from "@/lib/chartFacts";
 import type { Lang } from "@/lib/i18n";
 import { generateRulePrediction } from "@/lib/ruleEngine";
+import { z } from "zod";
 import {
   PredictRequestSchema,
+  PredictionSectionSchema,
   PredictionBodySchema,
   type ChartResponse,
   type Prediction,
@@ -26,26 +28,27 @@ const sectionSchema = {
   additionalProperties: false,
 } as const;
 
-const OUTPUT_SCHEMA = {
-  type: "object",
-  properties: {
-    sections: {
-      type: "object",
-      properties: {
-        summary: sectionSchema,
-        personality: sectionSchema,
-        career: sectionSchema,
-        marriage: sectionSchema,
-        future: sectionSchema,
-      },
-      required: ["summary", "personality", "career", "marriage", "future"],
-      additionalProperties: false,
+const SECTION_KEYS = ["summary", "personality", "career", "marriage", "future"] as const;
+type SectionKey = (typeof SECTION_KEYS)[number];
+
+/** Each section is written by its own call so they run in parallel; "future" also returns the remedies. */
+function outputSchemaFor(key: SectionKey) {
+  const withRemedies = key === "future";
+  return {
+    type: "object",
+    properties: {
+      section: sectionSchema,
+      ...(withRemedies ? { remedies: { type: "array", items: { type: "string" } } } : {}),
     },
-    remedies: { type: "array", items: { type: "string" } },
-  },
-  required: ["sections", "remedies"],
-  additionalProperties: false,
-};
+    required: withRemedies ? ["section", "remedies"] : ["section"],
+    additionalProperties: false,
+  };
+}
+
+const SectionResultSchema = z.object({
+  section: PredictionSectionSchema,
+  remedies: z.array(z.string().min(1)).optional(),
+});
 
 const SYSTEM_PROMPT = `You are a senior Sri Lankan astrologer (jyotishya) writing a personal Handahana reading in the traditional Sri Lankan style, using sidereal Lahiri positions and whole-sign houses.
 
@@ -69,15 +72,31 @@ function languageInstruction(lang: Lang): string {
 
 async function generateWithGemini(chart: ChartResponse, lang: Lang, key: string): Promise<PredictionBody> {
   const digest = chartDigest(deriveFacts(chart));
-  return generateJson({
-    key,
-    model: MODEL,
-    system: SYSTEM_PROMPT,
-    prompt: `${languageInstruction(lang)}\n\n<chart>\n${digest}\n</chart>`,
-    jsonSchema: OUTPUT_SCHEMA,
-    validate: PredictionBodySchema,
-    // A full five-section reading is long; allow more time before the rule-based fallback.
-    timeoutMs: 120_000,
+  const results = await Promise.all(
+    SECTION_KEYS.map((section) =>
+      generateJson({
+        key,
+        model: MODEL,
+        system: SYSTEM_PROMPT,
+        prompt: `${languageInstruction(lang)}
+
+Write ONLY the "${section}" section${
+          section === "future" ? ' and the "remedies" list' : ""
+        }; the other sections are written separately.
+
+<chart>
+${digest}
+</chart>`,
+        jsonSchema: outputSchemaFor(section),
+        validate: section === "future" ? SectionResultSchema.required({ remedies: true }) : SectionResultSchema,
+        timeoutMs: 90_000,
+      }),
+    ),
+  );
+  const [summary, personality, career, marriage, future] = results.map((r) => r.section);
+  return PredictionBodySchema.parse({
+    sections: { summary, personality, career, marriage, future },
+    remedies: results[4].remedies,
   });
 }
 

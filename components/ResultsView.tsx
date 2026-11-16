@@ -56,36 +56,37 @@ export function ResultsView({ chart, townId, prediction, predictionLoading, pred
           </p>
         </header>
 
-        <div className="flex flex-col gap-4 sm:gap-6 lg:grid lg:grid-cols-2 lg:items-start print:block print:space-y-6">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:block lg:columns-2 lg:gap-6 print:block print:columns-1 print:space-y-6">
           <div className="order-1 lg:hidden print:hidden">
             <QuickFacts chart={chart} />
           </div>
 
-          <div className="order-2 lg:col-span-2 lg:row-start-1">
+          <div className="order-2 lg:mb-6 lg:[column-span:all] print:mb-0">
             <ChartsSection chart={chart} />
           </div>
 
-          <div className="order-8 lg:col-start-1 lg:row-start-2">
-            <BirthDetailsCard chart={chart} townId={townId} />
-          </div>
-
-          <div className="order-7 lg:col-start-1 lg:row-start-3">
+          <div className="order-7 lg:mb-6 lg:[column-span:all] print:mb-0">
             <PlanetTable chart={chart} />
           </div>
 
-          <div className="order-5 lg:col-start-2 lg:row-span-2 lg:row-start-2">
-            <DashaTimeline chart={chart} />
+          {/* On large screens the cards below flow into two balanced columns, so no gaps are left under short cards. */}
+          <div className="order-8 lg:mb-6 lg:break-inside-avoid print:mb-0">
+            <BirthDetailsCard chart={chart} townId={townId} />
           </div>
 
-          <div className="order-4 lg:col-start-1 lg:row-start-4">
+          <div className="order-4 lg:mb-6 lg:break-inside-avoid print:mb-0">
             <ApalaCard chart={chart} />
           </div>
 
-          <div className="order-6 lg:col-start-2 lg:row-start-4 print:hidden">
+          <div className="order-5 lg:mb-6 lg:break-inside-avoid print:mb-0">
+            <DashaTimeline chart={chart} />
+          </div>
+
+          <div className="order-6 lg:mb-6 lg:break-inside-avoid print:hidden">
             <BabyNames chart={chart} />
           </div>
 
-          <div className="order-3 lg:col-span-2 lg:row-start-5">
+          <div className="order-3 lg:[column-span:all] print:mb-0">
             <PredictionView prediction={prediction} loading={predictionLoading} error={predictionError} onRegenerate={onRegenerate} />
           </div>
         </div>
